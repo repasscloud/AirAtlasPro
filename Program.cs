@@ -2,8 +2,9 @@ using Auth0.AspNetCore.Authentication;
 using Blazored.Toast;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
-using AirAtlasPro.Services;
 using Microsoft.OpenApi.Models;
+using AirAtlasPro.Services;
+using AirAtlasPro.Services.Interfaces;
 
 namespace AirAtlasPro;
 
@@ -24,9 +25,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddBlazoredToast();  // toast notifications
+
+        // Toast Notifications
+        builder.Services.AddBlazoredToast();
 
         builder.Services.AddControllers();
+
+        // Swagger
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -54,7 +59,7 @@ public class Program
         // Configure and register HttpClient
         builder.Services.AddHttpClient<ISupportTicketService, SupportTicketService>(client =>
         {
-            client.BaseAddress = new Uri(builder.Configuration["OptechX-URLs:BASE-API"]!);
+            client.BaseAddress = new Uri(builder.Configuration["AirAtlasProURLs:BaseUrl"]!);
             client.DefaultRequestHeaders.Add("Accept", "");
             client.DefaultRequestHeaders.Add("User-Agent", "API");
             client.DefaultRequestHeaders.Add("X-Admin-Support-API-Key", builder.Configuration["X-Admin:Support-API-Key"]);
@@ -62,6 +67,7 @@ public class Program
 
         var app = builder.Build();
 
+        // Swagger
         app.UseSwagger();
         app.UseSwaggerUI();
 
