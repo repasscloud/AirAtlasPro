@@ -1,6 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Auth0.AspNetCore.Authentication;
+using Blazored.Toast;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.HttpOverrides;
 using AirAtlasPro.Data;
+using AirAtlasPro.Services;
 
 namespace AirAtlasPro;
 
@@ -10,10 +13,25 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Add Auth0
+        builder.Services
+            .AddAuth0WebAppAuthentication(options => {
+                options.Domain = builder.Configuration["Auth0:Domain"]!;
+                options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+            });
+
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
+        builder.Services.AddBlazoredToast();  // toast notifications
         builder.Services.AddSingleton<WeatherForecastService>();
+
+        // Configure and register HttpClient
+        builder.Services.AddHttpClient<ISupportTicketService, SupportTicketService>(client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["OptechX-URLs:BASE-API"]!);
+            client.DefaultRequestHeaders.Add("X-Admin-Support-API-Key", builder.Configuration["X-Admin:Support-API-Key"]);
+        });
 
         var app = builder.Build();
 
@@ -23,13 +41,33 @@ public class Program
             app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
-        }
 
-        app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
+
+            // Add the following lines to configure HTTPS redirection middleware
+            var forwardingOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+            };
+            forwardingOptions.KnownNetworks.Clear();
+            forwardingOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardingOptions);
+            
+            // Configure the cookie policy to set SameSite=None and Secure for cookies
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None, // Allow cross-site cookies
+                HttpOnly = HttpOnlyPolicy.None, // Allow JavaScript access to cookies if needed
+                Secure = CookieSecurePolicy.Always // Require cookies to be sent over HTTPS
+            });
+        }
 
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
