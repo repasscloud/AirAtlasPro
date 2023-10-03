@@ -15,7 +15,8 @@ public class Program
 
         // Add Auth0
         builder.Services
-            .AddAuth0WebAppAuthentication(options => {
+            .AddAuth0WebAppAuthentication(options => 
+            {
                 options.Domain = builder.Configuration["Auth0:Domain"]!;
                 options.ClientId = builder.Configuration["Auth0:ClientId"]!;
             });
@@ -24,16 +25,33 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
         builder.Services.AddBlazoredToast();  // toast notifications
+
+
+
         builder.Services.AddSingleton<WeatherForecastService>();
+
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddHttpContextAccessor();
 
         // Configure and register HttpClient
         builder.Services.AddHttpClient<ISupportTicketService, SupportTicketService>(client =>
         {
             client.BaseAddress = new Uri(builder.Configuration["OptechX-URLs:BASE-API"]!);
+            client.DefaultRequestHeaders.Add("Accept", "");
+            client.DefaultRequestHeaders.Add("User-Agent", "API");
             client.DefaultRequestHeaders.Add("X-Admin-Support-API-Key", builder.Configuration["X-Admin:Support-API-Key"]);
         });
 
         var app = builder.Build();
+
+        app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor API V1");
+});
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
