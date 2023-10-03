@@ -17,8 +17,12 @@
 
   <ItemGroup>
     <None Remove="Controllers\" />
+    <None Remove="Pages\Account\" />
+    <None Remove="Services\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Pages\Account\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 </Project>

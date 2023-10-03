@@ -1,0 +1,42 @@
+﻿@page "/account/settings"
+@attribute [Authorize]
+@inject IJSRuntime JSRuntime
+@inject ISupportTicketService SupportTicketService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@pageTitle</PageTitle>
+
+
+
+@code {
+    private string pageTitle = "Account Settings";
+
+    private string Username = "Anonymous User";
+    private string Picture = string.Empty;
+    private bool? hasBillingRole;
+    private bool? hasSupportRole;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            Username = state?.User?.Identity?.Name ?? string.Empty;
+
+            Picture = state?.User.Claims
+                        .Where(c => c.Type.Equals("picture"))
+                        .Select(c => c.Value)
+                        .FirstOrDefault() ?? string.Empty;
+
+            hasBillingRole = state?.User.IsInRole("Billing");
+            hasSupportRole = state?.User.IsInRole("Support");
+        }
+        await base.OnInitializedAsync();
+    }
+}
+
