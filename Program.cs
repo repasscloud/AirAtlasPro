@@ -2,8 +2,8 @@ using Auth0.AspNetCore.Authentication;
 using Blazored.Toast;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
-using AirAtlasPro.Data;
 using AirAtlasPro.Services;
+using Microsoft.OpenApi.Models;
 
 namespace AirAtlasPro;
 
@@ -26,13 +26,28 @@ public class Program
         builder.Services.AddServerSideBlazor();
         builder.Services.AddBlazoredToast();  // toast notifications
 
-
-
-        builder.Services.AddSingleton<WeatherForecastService>();
-
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "ToDo API",
+        Description = "An ASP.NET Core Web API for managing ToDo items",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "Example Contact",
+            Url = new Uri("https://example.com/contact")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Example License",
+            Url = new Uri("https://example.com/license")
+        }
+    });
+});
 
         builder.Services.AddHttpContextAccessor();
 
@@ -48,10 +63,7 @@ public class Program
         var app = builder.Build();
 
         app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor API V1");
-});
+        app.UseSwaggerUI();
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
