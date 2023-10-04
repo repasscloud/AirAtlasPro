@@ -1,0 +1,16 @@
+﻿/* CSS for mobile view */
+.form-group-mobile {
+    margin-top: 8px; /* Add some margin for separation in mobile view */
+}
+
+/* CSS for desktop view - use media query to apply styles only for screens wider than a certain width */
+@media (min-width: 768px) {
+    .form-group-row {
+        display: flex;
+        justify-content: space-between; /* Arrange State and PostalCode side by side */
+    }
+
+    .form-group-mobile {
+        display: none; /* Hide PostalCode in desktop view */
+    }
+}
