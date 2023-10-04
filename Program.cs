@@ -56,7 +56,7 @@ public class Program
 
         builder.Services.AddHttpContextAccessor();
 
-        // Configure and register HttpClient
+        // Configure and register SupportTicketService HttpClient
         builder.Services.AddHttpClient<ISupportTicketService, SupportTicketService>(client =>
         {
             client.BaseAddress = new Uri(builder.Configuration["AirAtlasPro:BaseUrl"]!);
