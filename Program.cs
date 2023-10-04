@@ -65,6 +65,15 @@ public class Program
             client.DefaultRequestHeaders.Add("X-Admin-Support-API-Key", builder.Configuration["X-Admin:Support-API-Key"]);
         });
 
+        // Configure and register UserAccountService HttpClient
+        builder.Services.AddHttpClient<IUserAccountService, UserAccountService>(client =>
+        {
+            client.BaseAddress = new Uri(builder.Configuration["AirAtlasPro:BaseUrl"]!);
+            client.DefaultRequestHeaders.Add("Accept", "");
+            client.DefaultRequestHeaders.Add("User-Agent", "API");
+            client.DefaultRequestHeaders.Add("X-Admin-Account-API-Key", builder.Configuration["X-Admin:Account-API-Key"]);
+        });
+
         var app = builder.Build();
 
         // Swagger
