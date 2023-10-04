@@ -75,6 +75,7 @@ namespace AirAtlasPro.Controllers.Stripe
                         {
                             FileWriter.AppendToJsonLog($"Inner Exception: {ex.InnerException.Message}");
                         }
+                        return BadRequest();
                     }
                     break;
                 default:
