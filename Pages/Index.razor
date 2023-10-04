@@ -1,9 +1,54 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject IJSRuntime JSRuntime
+@inject ISupportTicketService SupportTicketService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>@pageTitle</h1>
 
-Welcome to your new app.
+@code {
+    private string pageTitle = "AirAtlasPro";
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    private bool showLogin = true;
+
+    private string Username = "Anonymous User";
+    private string Picture = string.Empty;
+    private bool? hasBillingRole;
+    private bool? hasSupportRole;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            Username = state?.User?.Identity?.Name ?? string.Empty;
+
+            Picture = state?.User.Claims
+                        .Where(c => c.Type.Equals("picture"))
+                        .Select(c => c.Value)
+                        .FirstOrDefault() ?? string.Empty;
+
+            hasBillingRole = state?.User.IsInRole("Billing");
+            hasSupportRole = state?.User.IsInRole("Support");
+
+            if (!string.IsNullOrEmpty(state?.User?.Identity?.Name))
+            {
+                showLogin = false;
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+
+    // Redirect to login page if not already logged in
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login?redirectUri=/");
+    }
+}
