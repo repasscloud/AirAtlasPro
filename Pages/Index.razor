@@ -9,6 +9,11 @@
 
 <h2>@pageTitle</h2>
 
+@if (showLogin)
+{
+    NavigateToLogin();
+}
+
 @code {
     private string pageTitle = "AirAtlasPro";
 
