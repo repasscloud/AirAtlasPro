@@ -29,6 +29,9 @@ public class Program
         // Toast Notifications
         builder.Services.AddBlazoredToast();
 
+        // Add scoped services to container
+        builder.Services.AddScoped<IEmailService, EmailService>();
+
         builder.Services.AddControllers();
 
         // Swagger
