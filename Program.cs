@@ -3,6 +3,7 @@ using Blazored.Toast;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi.Models;
+using Syncfusion.Blazor;
 using AirAtlasPro.Services;
 using AirAtlasPro.Services.Interfaces;
 
@@ -13,6 +14,9 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Syncfusion license
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(builder.Configuration["Syncfusion:LicenseKey"]!);
 
         // Add Auth0
         builder.Services
@@ -28,6 +32,9 @@ public class Program
 
         // Toast Notifications
         builder.Services.AddBlazoredToast();
+
+        // Syncfusion Barcode
+        builder.Services.AddSyncfusionBlazor();
 
         // Add scoped services to container
         builder.Services.AddScoped<IEmailService, EmailService>();
