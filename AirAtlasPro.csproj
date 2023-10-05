@@ -30,6 +30,7 @@
     <None Remove="Controllers\Stripe\" />
     <None Remove="Data\" />
     <None Remove="Models\Stripe\" />
+    <None Remove="Models\OpenWeather\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -41,5 +42,6 @@
     <Folder Include="Controllers\Stripe\" />
     <Folder Include="Data\" />
     <Folder Include="Models\Stripe\" />
+    <Folder Include="Models\OpenWeather\" />
   </ItemGroup>
 </Project>
