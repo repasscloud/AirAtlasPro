@@ -1,0 +1,32 @@
+﻿.centercontrol {
+    margin: auto;
+    width: 50%;
+    padding-left: 18%;
+    height: 50%;
+}
+
+.allowedText {
+    margin-left: 14px;
+    margin-right: 17px;
+    margin-top: 14px;
+    width: auto;
+    height: auto;
+}
+
+.center {
+    margin-left: 14px;
+    margin-right: 17px;
+    margin-top: 14px;
+    min-width: 280px;
+    width: auto;
+    border: 2px solid lightgray;
+    min-height: 40%;
+    padding-top: 35px;
+}
+
+@@media screen and (max-width: 570px) {
+    .centercontrol {
+        width: 60%;
+        padding-left: 0px;
+    }
+}
